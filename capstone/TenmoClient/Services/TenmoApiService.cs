@@ -12,6 +12,28 @@ namespace TenmoClient.Services
 
         // Add methods to call api here...
 
+        public Account GetBalance()
+        {
+            RestRequest request = new RestRequest("account");
+            IRestResponse<Account> response = client.Get<Account>(request);
+
+            return response.Data;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         //public List<Transfer> ListTransfers()
         //rest request to GET("transfer")
         //client.Gets<List<Transfer>>(request)

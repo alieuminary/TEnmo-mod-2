@@ -74,6 +74,8 @@ namespace TenmoClient
             if (menuSelection == 1)
             {
                 // View your current balance
+                Account account = tenmoApiService.GetBalance();
+                console.PrintAccountBalance(account.balance);
             }
 
             if (menuSelection == 2)
