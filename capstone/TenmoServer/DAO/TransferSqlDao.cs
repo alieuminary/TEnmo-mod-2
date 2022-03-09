@@ -21,10 +21,10 @@ namespace TenmoServer.DAO
         }
 
 
-        public List<Transfer> GetTransfers()
+        public List<Transfer> GetTransfers(string authUserId)
         {
 
-            string authUserId = null; // User.FindFirst ("sub")?.Value; // User.Identity.Name;
+            //string authUserId = null//User.FindFirst("sub")?.Value; // User.Identity.Name;
 
             List<Transfer> transfers = new List<Transfer>();
 

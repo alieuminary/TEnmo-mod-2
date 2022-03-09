@@ -9,7 +9,7 @@ namespace TenmoServer.DAO
 {
     interface ITransferDao
     {
-        List<Transfer> GetTransfers();
+        List<Transfer> GetTransfers(string authUserId);
 
         Transfer GetTransferDetails(int id);
 
