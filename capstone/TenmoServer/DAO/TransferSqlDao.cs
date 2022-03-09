@@ -7,6 +7,7 @@ using TenmoServer.Security;
 using TenmoServer.Security.Models;
 using TenmoServer.Models;
 
+
 namespace TenmoServer.DAO
 {
     public class TransferSqlDao : ITransferDao
@@ -23,7 +24,7 @@ namespace TenmoServer.DAO
         public List<Transfer> GetTransfers()
         {
 
-            string authUserId = User.FindFirst("sub")?.Value;
+            string authUserId = null; // User.FindFirst ("sub")?.Value; // User.Identity.Name;
 
             List<Transfer> transfers = new List<Transfer>();
 
@@ -56,7 +57,11 @@ namespace TenmoServer.DAO
 
         }
 
-        public Transfer GetTransferDetails(int id) { };
+        public Transfer GetTransferDetails(int id) 
+        {
+            Transfer transfer = new Transfer();
+            return transfer;
+        }
 
 
 
