@@ -78,6 +78,7 @@ namespace TenmoClient
 
             if (menuSelection == 2)
             {
+
                 // View your past transfers
             }
 
@@ -158,5 +159,8 @@ namespace TenmoClient
             }
             console.Pause();
         }
+
+
+
     }
 }

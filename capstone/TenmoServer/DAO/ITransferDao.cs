@@ -7,7 +7,7 @@ using TenmoServer.Models;
 
 namespace TenmoServer.DAO
 {
-    interface ITransferDao
+    public interface ITransferDao
     {
         List<Transfer> GetTransfers(string authUserId);
 

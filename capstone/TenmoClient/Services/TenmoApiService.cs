@@ -12,6 +12,11 @@ namespace TenmoClient.Services
 
         // Add methods to call api here...
 
+        //public List<Transfer> ListTransfers()
+        //rest request to GET("transfer")
+        //client.Gets<List<Transfer>>(request)
+
+
 
     }
 }
