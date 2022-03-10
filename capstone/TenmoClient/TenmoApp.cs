@@ -188,7 +188,7 @@ namespace TenmoClient
                 console.Pause();
                 Option4();
             }
-            if(toUserId == account.UserId)
+            if(toUserId == account.user_id)
             {
                 console.PrintError("You can't send money to yourself");
                 console.Pause();

@@ -6,8 +6,8 @@ namespace TenmoClient.Models
 {
     public class Account
     {
-        public int AccountId { get; set; }
-        public int UserId { get; set; }
+        public int account_id { get; set; }
+        public int user_id { get; set; }
         public decimal balance { get; set; }
 
 

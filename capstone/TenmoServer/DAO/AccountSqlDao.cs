@@ -61,13 +61,13 @@ namespace TenmoServer.DAO
                     conn.Open();
 
                     string cmdText = "UPDATE account " +
-                                     "SET user_id = @user_id, balance = @balance " + //account_id = @account_id,
+                                     "SET user_id = @user_id, balance = @balance, account_id = @account_id " + //,
                                      "WHERE user_id = @user_id";
 
                     
                     SqlCommand cmd = new SqlCommand(cmdText, conn);
                     cmd.Parameters.AddWithValue("@user_id", account.user_id);
-                    //cmd.Parameters.AddWithValue("@account_id", account.account_id);
+                    cmd.Parameters.AddWithValue("@account_id", account.account_id);
                     cmd.Parameters.AddWithValue("@balance", account.balance);
                     int rowsAffected = cmd.ExecuteNonQuery();
 
@@ -130,7 +130,7 @@ namespace TenmoServer.DAO
             Account account = new Account()
             {
                 balance = Convert.ToDecimal(reader["balance"]),
-                //account_id = Convert.ToInt32(reader["account_id"]),
+                account_id = Convert.ToInt32(reader["account_id"]),
                 user_id = Convert.ToInt32(reader["user_id"])
             };
 
