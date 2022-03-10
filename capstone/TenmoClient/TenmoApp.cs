@@ -76,6 +76,7 @@ namespace TenmoClient
                 // View your current balance
                 Account account = tenmoApiService.GetBalance();
                 console.PrintAccountBalance(account.balance);
+                console.Pause();
             }
 
             if (menuSelection == 2)
@@ -92,6 +93,7 @@ namespace TenmoClient
             if (menuSelection == 4)
             {
                 // Send TE bucks
+                Option4();
             }
 
             if (menuSelection == 5)
@@ -162,7 +164,50 @@ namespace TenmoClient
             console.Pause();
         }
 
+        private void Option4()
+        {
+            // Send TE bucks
+            List<User> users = tenmoApiService.GetUsers();            
+            console.PrintUsers(users);
+            int toUserId = console.PromptForInteger("Id of the user you are sending to", 0);
+            Account account = tenmoApiService.GetBalance();
 
+            bool isUser = false;
+            foreach (User user in users)
+            {
+                if (user.UserId == toUserId)
+                {
+                    isUser = true;
+                }
+            }
+
+            if (isUser == false)
+            {
+                console.PrintError("Invalid user Id");
+                console.Pause();
+                Option4();
+            }
+            if(toUserId == account.UserId)
+            {
+                console.PrintError("You can't send money to yourself");
+                console.Pause();
+                Option4();
+            }
+
+            decimal transferAmount = console.PromptForDecimal("Enter amount to send");
+            
+            decimal currentBalance = account.balance;
+            if(transferAmount > currentBalance)
+            {
+                console.PrintError("Insufficient funds");
+                console.Pause();
+                Option4();
+            }
+
+            //we have valid to user id and amount. now impliment the transfer.
+
+            
+        }
 
     }
 }

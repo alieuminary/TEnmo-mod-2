@@ -59,5 +59,13 @@ namespace TenmoClient.Services
             Console.WriteLine($"Your current account balance is ${balance}");
         }
 
+        public void PrintUsers(List<User> users)
+        {
+            Console.WriteLine(" Id    |  User");
+            foreach(User user in users)
+            {
+                Console.WriteLine($" {user.UserId}  |  {user.Username}");
+            }
+        }
     }
 }
