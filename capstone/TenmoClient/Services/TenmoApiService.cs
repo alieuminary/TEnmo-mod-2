@@ -28,6 +28,25 @@ namespace TenmoClient.Services
             return response.Data;
         }
 
+        // create put to update balance in the account entity/table
+        public Account UpdateBalance(Account accountToUpdate)
+        {
+            RestRequest request = new RestRequest($"account/{accountToUpdate.UserId}");
+            request.AddJsonBody(accountToUpdate);
+            IRestResponse<Account> response = client.Put<Account>(request);
+            //check for error?
+            return response.Data;
+        }
+
+        public Account GetAccount(int userId)
+        {
+            RestRequest request = new RestRequest($"account/{userId}");
+            IRestResponse<Account> response = client.Get<Account>(request);
+
+            return response.Data;
+        }
+
+
 
 
 

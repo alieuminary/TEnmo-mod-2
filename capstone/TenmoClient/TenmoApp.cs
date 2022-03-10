@@ -172,6 +172,7 @@ namespace TenmoClient
             int toUserId = console.PromptForInteger("Id of the user you are sending to", 0);
             Account account = tenmoApiService.GetBalance();
 
+
             bool isUser = false;
             foreach (User user in users)
             {
@@ -194,8 +195,16 @@ namespace TenmoClient
                 Option4();
             }
 
+
             decimal transferAmount = console.PromptForDecimal("Enter amount to send");
             
+            if (transferAmount <= 0)
+            {
+                console.PrintError("Dollar amount must be greater than zero.");
+                console.Pause();
+                Option4();
+            }
+
             decimal currentBalance = account.balance;
             if(transferAmount > currentBalance)
             {
@@ -204,7 +213,18 @@ namespace TenmoClient
                 Option4();
             }
 
-            //we have valid to user id and amount. now impliment the transfer.
+            // update to new user balance
+            Account toAccount = tenmoApiService.GetAccount(toUserId);
+            toAccount.balance += transferAmount;
+            Account updatedToAccount = tenmoApiService.UpdateBalance(toAccount);
+
+            // Update from user balance
+            account.balance -= transferAmount;
+            Account accountUpdated = tenmoApiService.UpdateBalance(account);
+            
+
+            
+            
 
             
         }

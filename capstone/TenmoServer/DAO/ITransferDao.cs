@@ -13,5 +13,7 @@ namespace TenmoServer.DAO
 
         Transfer GetTransferDetails(int id);
 
+        //Transfer AddTransfer(int fromUserId, int toUserId, decimal amount);
+
     }
 }
