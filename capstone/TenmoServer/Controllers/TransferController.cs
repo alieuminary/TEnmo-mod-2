@@ -40,7 +40,21 @@ namespace TenmoServer.Controllers
             return Ok(result);
         }
 
-        //[HttpGet("{id}")] -method that gets transfer details based off of transfer_id - USE CASE 6
+        // method that gets transfer details based off of transfer_id - USE CASE 6
+        [HttpGet("{id}")]
+
+        public Transfer GetTransferDetails(int id)
+        {
+            Transfer result = transferDao.GetTransferDetails(id);
+
+            return result;
+
+        }
+
+
+
+
+
 
         [HttpPost()]
         public ActionResult AddTransfer(Transfer transferToAdd) //<Transfer>
@@ -53,6 +67,9 @@ namespace TenmoServer.Controllers
             }
             return NotFound();
         }
+
+
+
 
     }
 }

@@ -75,8 +75,21 @@ namespace TenmoClient.Services
             Console.WriteLine("=============================");
             foreach(Transfer transfer in transfers)
             {
-                Console.WriteLine($" {transfer.TransferId} | {transfer.AccountFrom} | {transfer.AccountTo} | {transfer.Amount}");
+                Console.WriteLine($" {transfer.TransferId} | {transfer.FromUsername} | {transfer.ToUsername} | {transfer.Amount}");
             }
+        }
+
+        public void PrintTransferDetails (Transfer transfer)
+        {
+            Console.WriteLine("Transfer Details");
+            Console.WriteLine("================");
+            Console.WriteLine($"Id: {transfer.TransferId}");
+            Console.WriteLine($"From: {transfer.FromUsername}");
+            Console.WriteLine($"To: {transfer.ToUsername}");
+            Console.WriteLine($"Type: {transfer.TransferTypeId}");
+            Console.WriteLine($"Status: {transfer.TransferStatusId}");
+            Console.WriteLine($"Amount: ${transfer.Amount}");
+
         }
     }
 }

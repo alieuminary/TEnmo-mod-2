@@ -168,7 +168,24 @@ namespace TenmoClient
         {
             List<Transfer> transfers = tenmoApiService.GetTransfers();
             console.PrintTransfers(transfers);
+
+            int selectedTransferId = console.PromptForInteger("Please enter transfer ID to view details (0 to cancel)", -1);
+
+            if (selectedTransferId == 0)
+            {
+                RunAuthenticated();
+            }
+            else if (selectedTransferId == -1)
+            {
+                //console.PrintError("Invalid transfer ID.");
+                Option2();
+            }
+
+            // Display transfer details
+            Transfer transfer = tenmoApiService.GetTransferDetails(selectedTransferId);
+            console.PrintTransferDetails(transfer);
             console.Pause();
+
         }
 
         private void Option4()
@@ -205,6 +222,7 @@ namespace TenmoClient
 
             decimal transferAmount = console.PromptForDecimal("Enter amount to send");
             
+            // condition check - to not allow zero or negative amount.
             if (transferAmount <= 0)
             {
                 console.PrintError("Dollar amount must be greater than zero.");
@@ -212,6 +230,8 @@ namespace TenmoClient
                 Option4();
             }
 
+
+            // condition check - cannot send more money than currently in account.
             decimal currentBalance = account.balance;
             if(transferAmount > currentBalance)
             {
@@ -220,21 +240,23 @@ namespace TenmoClient
                 Option4();
             }
 
-            // update to new user balance
+            // update to new user balance.
             Account toAccount = tenmoApiService.GetAccount(toUserId);
             toAccount.balance += transferAmount;
             Account updatedToAccount = tenmoApiService.UpdateBalance(toAccount);
 
-            // Update from user balance
+            // Update from user balance.
             account.balance -= transferAmount;
             Account updatedFromAccount = tenmoApiService.UpdateBalance(account);
 
-            //create a transfer object and send it to tenmoApiService.AddTransfer() method.
+            // create a transfer object and send it to tenmoApiService.AddTransfer() method.
             Transfer newTransfer = new Transfer();
             newTransfer.AccountFrom = updatedFromAccount.account_id;
             newTransfer.AccountTo = updatedToAccount.account_id;
             newTransfer.Amount = transferAmount;
             newTransfer.TransferTypeId = 2;
+
+            // sending transfer has an initial status of APPROVED.
             newTransfer.TransferStatusId = 1;
 
             tenmoApiService.AddTransfer(newTransfer);

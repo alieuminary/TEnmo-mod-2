@@ -45,6 +45,7 @@ namespace TenmoServer.DAO
                     while (reader.Read())
                     {
                         Transfer transfer = GetTransferFromReader(reader);
+                        transfer = GetUserIdsAndUsernames(transfer);
                         transfers.Add(transfer);
                     }
 
@@ -60,11 +61,47 @@ namespace TenmoServer.DAO
 
         }
 
+
         public Transfer GetTransferDetails(int id) 
         {
             Transfer transfer = new Transfer();
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    string cmdText = "SELECT * FROM transfer " +
+                                     "WHERE transfer_id = @transferId;";
+                    
+                    SqlCommand cmd = new SqlCommand(cmdText, conn);
+                    cmd.Parameters.AddWithValue("@transferId", id);
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        transfer = GetTransferFromReader(reader);
+                        
+                    }
+
+                    
+
+                }
+
+                transfer = GetUserIdsAndUsernames(transfer);
+
+            }
+            catch (SqlException)
+            {
+                throw;
+            }
+
             return transfer;
         }
+
+
+
 
         public int AddTransfer(int transferTypeId, int transferStatusId, int accountFrom, int accountTo, decimal amount)
         {
@@ -100,20 +137,12 @@ namespace TenmoServer.DAO
         private Transfer GetTransferFromReader(SqlDataReader reader)
         {
 
-            //Transfer transfer = new Transfer();
-
-            //transfer.TransferId = Convert.ToInt32(reader["transfer_id"]);
-            //transfer.TransferTypeId = Convert.ToInt32(reader["transfer_type_id"]);
-            //transfer.TransferStatusId = Convert.ToInt32(reader["transfer_status_id"]);
-            //transfer.AccountFrom = Convert.ToInt32(reader["account_from"]);
-            //transfer.AccountTo = Convert.ToInt32(reader["account_to"]);
-            //transfer.Amount = Convert.ToDecimal(reader["amount"]);
-
             Transfer transfer = new Transfer()
             {
                 TransferId = Convert.ToInt32(reader["transfer_id"]),
                 TransferTypeId = Convert.ToInt32(reader["transfer_type_id"]),
                 TransferStatusId = Convert.ToInt32(reader["transfer_status_id"]),
+
                 AccountFrom = Convert.ToInt32(reader["account_from"]),
                 AccountTo = Convert.ToInt32(reader["account_to"]),
                 Amount = Convert.ToDecimal(reader["amount"]),
@@ -121,6 +150,65 @@ namespace TenmoServer.DAO
 
             return transfer;
 
+        }
+
+
+
+        private Transfer GetUserIdsAndUsernames(Transfer transfer)
+        {
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+
+                string cmdText = "SELECT user_id FROM account WHERE account_id = @toUserAccountId";
+                SqlCommand cmd = new SqlCommand(cmdText, conn);
+                cmd.Parameters.AddWithValue("@toUserAccountId", transfer.AccountTo);
+
+                transfer.ToUserId = (int)cmd.ExecuteScalar();
+            }
+
+
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+
+                string cmdText = "SELECT user_id FROM account WHERE account_id = @fromUserAccountId";
+                SqlCommand cmd = new SqlCommand(cmdText, conn);
+                cmd.Parameters.AddWithValue("@fromUserAccountId", transfer.AccountFrom);
+
+                transfer.FromUserId = (int)cmd.ExecuteScalar();
+            }
+
+
+
+            // ===== Assign to toUsername ==== //
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+
+                string cmdText = "SELECT username FROM tenmo_user WHERE user_id = @toUserId";
+                SqlCommand cmd = new SqlCommand(cmdText, conn);
+                cmd.Parameters.AddWithValue("@toUserId", transfer.ToUserId);
+
+                transfer.ToUsername = cmd.ExecuteScalar().ToString();
+            }
+
+
+            // ===== Assign to fromUsername ==== //
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+
+                string cmdText = "SELECT username FROM tenmo_user WHERE user_id = @fromUserId";
+                SqlCommand cmd = new SqlCommand(cmdText, conn);
+                cmd.Parameters.AddWithValue("@fromUserId", transfer.FromUserId);
+
+                transfer.FromUsername = cmd.ExecuteScalar().ToString();
+            }
+
+            return transfer;
         }
     }
 }

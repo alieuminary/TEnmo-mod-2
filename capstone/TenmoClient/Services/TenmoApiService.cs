@@ -63,7 +63,13 @@ namespace TenmoClient.Services
             return response.Data;
         }
 
+        public Transfer GetTransferDetails(int id)
+        {
+            RestRequest request = new RestRequest($"transfer/{id}");
+            IRestResponse<Transfer> response = client.Get<Transfer>(request);
 
+            return response.Data;
+        }
 
 
 
