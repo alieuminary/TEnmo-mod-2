@@ -93,7 +93,12 @@ namespace TenmoClient
             if (menuSelection == 4)
             {
                 // Send TE bucks
-                Option4();
+                //Option4();
+                bool isSuccessful = Option4();
+                while (!isSuccessful)
+                {
+                    isSuccessful = Option4();
+                }
             }
 
             if (menuSelection == 5)
@@ -169,7 +174,7 @@ namespace TenmoClient
             List<Transfer> transfers = tenmoApiService.GetTransfers();
             console.PrintTransfers(transfers);
 
-            int selectedTransferId = console.PromptForInteger("Please enter transfer ID to view details (0 to cancel)", -1);
+            int selectedTransferId = console.PromptForInteger("Please enter Transfer Id to view details (0 to cancel)", -1);
 
             if (selectedTransferId == 0)
             {
@@ -188,14 +193,19 @@ namespace TenmoClient
 
         }
 
-        private void Option4()
+        private bool Option4()
         {
+
             // Send TE bucks
-            List<User> users = tenmoApiService.GetUsers();            
+            List<User> users = tenmoApiService.GetUsers();
             console.PrintUsers(users);
-            int toUserId = console.PromptForInteger("Id of the user you are sending to", 0);
+            int toUserId = console.PromptForInteger("Id of the user you are sending to (0 to cancel) ", 0);
             Account account = tenmoApiService.GetBalance();
 
+            if(toUserId == 0)
+            {
+                return true;
+            }
 
             bool isUser = false;
             foreach (User user in users)
@@ -210,35 +220,37 @@ namespace TenmoClient
             {
                 console.PrintError("Invalid user Id");
                 console.Pause();
-                Option4();
+                return false;
             }
-            if(toUserId == account.user_id)
+            if (toUserId == account.user_id)
             {
                 console.PrintError("You can't send money to yourself");
                 console.Pause();
-                Option4();
+                return false;
             }
 
 
             decimal transferAmount = console.PromptForDecimal("Enter amount to send");
-            
+
             // condition check - to not allow zero or negative amount.
             if (transferAmount <= 0)
             {
                 console.PrintError("Dollar amount must be greater than zero.");
                 console.Pause();
-                Option4();
+                return false;
             }
 
 
             // condition check - cannot send more money than currently in account.
             decimal currentBalance = account.balance;
-            if(transferAmount > currentBalance)
+            if (transferAmount > currentBalance)
             {
                 console.PrintError("Insufficient funds");
                 console.Pause();
-                Option4();
+                return false;
             }
+
+
 
             // update to new user balance.
             Account toAccount = tenmoApiService.GetAccount(toUserId);
@@ -257,15 +269,14 @@ namespace TenmoClient
             newTransfer.TransferTypeId = 2;
 
             // sending transfer has an initial status of APPROVED.
-            newTransfer.TransferStatusId = 1;
+            newTransfer.TransferStatusId = 2;
 
             tenmoApiService.AddTransfer(newTransfer);
 
-            
-            
-            
+            Console.WriteLine("Transfer Successful!");
+            console.Pause();
+            return true;
 
-            
         }
 
     }

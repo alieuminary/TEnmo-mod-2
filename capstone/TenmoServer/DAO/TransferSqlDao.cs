@@ -37,6 +37,8 @@ namespace TenmoServer.DAO
                     string cmdText = "SELECT * FROM transfer T " +
                                      "JOIN account A on T.account_from = A.account_id " +
                                      "JOIN account B on T.account_to = B.account_id " +
+                                     "JOIN transfer_type TT on T.transfer_type_id = TT.transfer_type_id " +
+                                     "JOIN transfer_status TS on T.transfer_status_id = TS.transfer_status_id " +
                                      "WHERE B.user_id = @authUserId OR A.user_id = @authUserId;";
                     SqlCommand cmd = new SqlCommand(cmdText, conn);
                     cmd.Parameters.AddWithValue("@authUserId", authUserId);
@@ -72,9 +74,13 @@ namespace TenmoServer.DAO
                 {
                     conn.Open();
 
-                    string cmdText = "SELECT * FROM transfer " +
-                                     "WHERE transfer_id = @transferId;";
-                    
+                    string cmdText = "SELECT * FROM transfer T " +
+                                     "JOIN account A on T.account_from = A.account_id " +
+                                     "JOIN account B on T.account_to = B.account_id " +
+                                     "JOIN transfer_type TT on T.transfer_type_id = TT.transfer_type_id " +
+                                     "JOIN transfer_status TS on T.transfer_status_id = TS.transfer_status_id " +
+                                     "WHERE T.transfer_id = @transferId;";
+
                     SqlCommand cmd = new SqlCommand(cmdText, conn);
                     cmd.Parameters.AddWithValue("@transferId", id);
                     SqlDataReader reader = cmd.ExecuteReader();
@@ -141,8 +147,9 @@ namespace TenmoServer.DAO
             {
                 TransferId = Convert.ToInt32(reader["transfer_id"]),
                 TransferTypeId = Convert.ToInt32(reader["transfer_type_id"]),
+                TransferTypeDesc = Convert.ToString(reader["transfer_type_desc"]),
                 TransferStatusId = Convert.ToInt32(reader["transfer_status_id"]),
-
+                TransferStatusDesc = Convert.ToString(reader["transfer_status_desc"]),
                 AccountFrom = Convert.ToInt32(reader["account_from"]),
                 AccountTo = Convert.ToInt32(reader["account_to"]),
                 Amount = Convert.ToDecimal(reader["amount"]),

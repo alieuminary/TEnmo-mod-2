@@ -73,11 +73,11 @@ namespace TenmoClient.Services
 
         public void PrintTransfers(List<Transfer> transfers)
         {
-            Console.WriteLine(" Id   | From | To   | Amount");
+            Console.WriteLine(" Transfer Id | From\t\t| To\t\t| Amount");
             Console.WriteLine("=============================");
             foreach(Transfer transfer in transfers)
             {
-                Console.WriteLine($" {transfer.TransferId} | {transfer.FromUsername} | {transfer.ToUsername} | {transfer.Amount}");
+                Console.WriteLine($"     {transfer.TransferId}\t| {transfer.FromUsername}\t\t| {transfer.ToUsername}\t\t| {transfer.Amount}");
             }
         }
 
@@ -88,8 +88,8 @@ namespace TenmoClient.Services
             Console.WriteLine($"Id: {transfer.TransferId}");
             Console.WriteLine($"From: {transfer.FromUsername}");
             Console.WriteLine($"To: {transfer.ToUsername}");
-            Console.WriteLine($"Type: {transfer.TransferTypeId}");
-            Console.WriteLine($"Status: {transfer.TransferStatusId}");
+            Console.WriteLine($"Type: {transfer.TransferTypeDesc}");
+            Console.WriteLine($"Status: {transfer.TransferStatusDesc}");
             Console.WriteLine($"Amount: ${transfer.Amount}");
 
         }
@@ -116,18 +116,6 @@ namespace TenmoClient.Services
             Console.WriteLine("****************************");
             Console.ResetColor();
 
-
-
-
-
-            //Console.ForegroundColor = ConsoleColor.Cyan;
-            //Console.WriteLine("****************************");
-            //Console.WriteLine("*  ___  __            _    *");
-            //Console.WriteLine("*   |  |_  |\\ | |\\/| / \\   *");
-            //Console.WriteLine("*   |  |__ | \\| |  | \\_/   *");
-            //Console.WriteLine("*                          *");
-            //Console.WriteLine("****************************");
-            //Console.ResetColor();
         }
         public void PrintTenmoWelcomeBanner()
         {
@@ -154,18 +142,6 @@ namespace TenmoClient.Services
             Console.WriteLine("****************************");
             Console.ResetColor();
 
-
-
-
-            //Console.ForegroundColor = ConsoleColor.Cyan;
-            //Console.WriteLine("****************************");
-            //Console.WriteLine("*        Welcome To        *");
-            //Console.WriteLine("*  ___  __            _    *");
-            //Console.WriteLine("*   |  |_  |\\ | |\\/| / \\   *");
-            //Console.WriteLine("*   |  |__ | \\| |  | \\_/   *");
-            //Console.WriteLine("*                          *");
-            //Console.WriteLine("****************************");
-            //Console.ResetColor();
         }
 
 

@@ -10,7 +10,11 @@ namespace TenmoClient.Models
 
             public int TransferTypeId { get; set; }
 
+            public string TransferTypeDesc { get; set; }
+
             public int TransferStatusId { get; set; }
+
+            public string TransferStatusDesc { get; set; }
 
             public int AccountFrom { get; set; }
 
