@@ -46,7 +46,22 @@ namespace TenmoClient.Services
             return response.Data;
         }
 
+        public Transfer AddTransfer(Transfer transferToAdd)
+        {
+            RestRequest request = new RestRequest("transfer");
+            request.AddJsonBody(transferToAdd);
+            IRestResponse<Transfer> response = client.Post<Transfer>(request);
 
+            return response.Data;
+        }
+
+        public List<Transfer> GetTransfers()
+        {
+            RestRequest request = new RestRequest("transfer");
+            IRestResponse<List<Transfer>> response = client.Get<List<Transfer>>(request);
+
+            return response.Data;
+        }
 
 
 

@@ -38,7 +38,20 @@ namespace TenmoServer.Controllers
             }
         
             return Ok(result);
-            
+        }
+
+        //[HttpGet("{id}")] -method that gets transfer details based off of transfer_id - USE CASE 6
+
+        [HttpPost()]
+        public ActionResult AddTransfer(Transfer transferToAdd) //<Transfer>
+        {
+            int newTransferId = transferDao.AddTransfer(transferToAdd.TransferTypeId, transferToAdd.TransferStatusId, transferToAdd.AccountFrom, transferToAdd.AccountTo, transferToAdd.Amount);
+
+            if (newTransferId > 0)
+            {
+                return Ok(); //Created();
+            }
+            return NotFound();
         }
 
     }

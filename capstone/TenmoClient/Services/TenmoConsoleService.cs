@@ -62,9 +62,20 @@ namespace TenmoClient.Services
         public void PrintUsers(List<User> users)
         {
             Console.WriteLine(" Id    |  User");
+            Console.WriteLine("===============");
             foreach(User user in users)
             {
                 Console.WriteLine($" {user.UserId}  |  {user.Username}");
+            }
+        }
+
+        public void PrintTransfers(List<Transfer> transfers)
+        {
+            Console.WriteLine(" Id   | From | To   | Amount");
+            Console.WriteLine("=============================");
+            foreach(Transfer transfer in transfers)
+            {
+                Console.WriteLine($" {transfer.TransferId} | {transfer.AccountFrom} | {transfer.AccountTo} | {transfer.Amount}");
             }
         }
     }

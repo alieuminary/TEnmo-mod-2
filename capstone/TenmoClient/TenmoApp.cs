@@ -80,9 +80,9 @@ namespace TenmoClient
             }
 
             if (menuSelection == 2)
-            {
-
+            {   
                 // View your past transfers
+                Option2();   
             }
 
             if (menuSelection == 3)
@@ -164,6 +164,13 @@ namespace TenmoClient
             console.Pause();
         }
 
+        private void Option2()
+        {
+            List<Transfer> transfers = tenmoApiService.GetTransfers();
+            console.PrintTransfers(transfers);
+            console.Pause();
+        }
+
         private void Option4()
         {
             // Send TE bucks
@@ -220,9 +227,19 @@ namespace TenmoClient
 
             // Update from user balance
             account.balance -= transferAmount;
-            Account accountUpdated = tenmoApiService.UpdateBalance(account);
-            
+            Account updatedFromAccount = tenmoApiService.UpdateBalance(account);
 
+            //create a transfer object and send it to tenmoApiService.AddTransfer() method.
+            Transfer newTransfer = new Transfer();
+            newTransfer.AccountFrom = updatedFromAccount.account_id;
+            newTransfer.AccountTo = updatedToAccount.account_id;
+            newTransfer.Amount = transferAmount;
+            newTransfer.TransferTypeId = 2;
+            newTransfer.TransferStatusId = 1;
+
+            tenmoApiService.AddTransfer(newTransfer);
+
+            
             
             
 
