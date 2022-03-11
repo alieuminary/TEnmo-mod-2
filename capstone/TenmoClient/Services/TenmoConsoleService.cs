@@ -13,26 +13,28 @@ namespace TenmoClient.Services
         {
             Console.Clear();
             Console.WriteLine("");
-            Console.WriteLine("Welcome to TEnmo!");
-            Console.WriteLine("1: Login");
-            Console.WriteLine("2: Register");
-            Console.WriteLine("0: Exit");
-            Console.WriteLine("---------");
+            PrintTenmoWelcomeBanner();
+            //Console.WriteLine("Welcome to TEnmo!");
+            Console.WriteLine("\t1: Login");
+            Console.WriteLine("\t2: Register");
+            Console.WriteLine("\t0: Exit");
+            Console.WriteLine("----------------------------");
         }
 
         public void PrintMainMenu(string username)
         {
             Console.Clear();
             Console.WriteLine("");
-            Console.WriteLine($"Hello, {username}!");
-            Console.WriteLine("1: View your current balance");
-            Console.WriteLine("2: View your past transfers");
-            Console.WriteLine("3: View your pending requests");
-            Console.WriteLine("4: Send TE bucks");
-            Console.WriteLine("5: Request TE bucks");
-            Console.WriteLine("6: Log out");
-            Console.WriteLine("0: Exit");
-            Console.WriteLine("---------");
+            PrintTenmoBanner();
+            Console.WriteLine($" Hello, {username}!");
+            Console.WriteLine(" 1: View your current balance");
+            Console.WriteLine(" 2: View your past transfers");
+            Console.WriteLine(" 3: View your pending requests");
+            Console.WriteLine(" 4: Send TE bucks");
+            Console.WriteLine(" 5: Request TE bucks");
+            Console.WriteLine(" 6: Log out");
+            Console.WriteLine(" 0: Exit");
+            Console.WriteLine("----------------------------"); ;
         }
         public LoginUser PromptForLogin()
         {
@@ -91,5 +93,81 @@ namespace TenmoClient.Services
             Console.WriteLine($"Amount: ${transfer.Amount}");
 
         }
+         public void PrintTenmoBanner()
+        {
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("****************************");
+            Console.Write("* ");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write(" ___  __ ");
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("           _    *");
+            Console.Write("*   ");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("|  |_  ");
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("|\\ | |\\/| / \\   *");
+            Console.Write("*   ");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("|  |__ ");
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("| \\| |  | \\_/   *");
+            Console.WriteLine("*                          *");
+            Console.WriteLine("****************************");
+            Console.ResetColor();
+
+
+
+
+
+            //Console.ForegroundColor = ConsoleColor.Cyan;
+            //Console.WriteLine("****************************");
+            //Console.WriteLine("*  ___  __            _    *");
+            //Console.WriteLine("*   |  |_  |\\ | |\\/| / \\   *");
+            //Console.WriteLine("*   |  |__ | \\| |  | \\_/   *");
+            //Console.WriteLine("*                          *");
+            //Console.WriteLine("****************************");
+            //Console.ResetColor();
+        }
+        public void PrintTenmoWelcomeBanner()
+        {
+
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("****************************");
+            Console.WriteLine("*        Welcome To        *");
+            Console.Write("* ");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write(" ___  __ ");
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("           _    *");
+            Console.Write("*   ");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("|  |_  ");
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("|\\ | |\\/| / \\   *");
+            Console.Write("*   ");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("|  |__ ");
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("| \\| |  | \\_/   *");
+            Console.WriteLine("*                          *");
+            Console.WriteLine("****************************");
+            Console.ResetColor();
+
+
+
+
+            //Console.ForegroundColor = ConsoleColor.Cyan;
+            //Console.WriteLine("****************************");
+            //Console.WriteLine("*        Welcome To        *");
+            //Console.WriteLine("*  ___  __            _    *");
+            //Console.WriteLine("*   |  |_  |\\ | |\\/| / \\   *");
+            //Console.WriteLine("*   |  |__ | \\| |  | \\_/   *");
+            //Console.WriteLine("*                          *");
+            //Console.WriteLine("****************************");
+            //Console.ResetColor();
+        }
+
+
     }
 }
