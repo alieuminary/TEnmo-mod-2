@@ -73,11 +73,18 @@ namespace TenmoClient.Services
 
         public void PrintTransfers(List<Transfer> transfers)
         {
-            Console.WriteLine(" Transfer Id | From\t\t| To\t\t| Amount");
-            Console.WriteLine("=============================");
-            foreach(Transfer transfer in transfers)
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
+            Console.WriteLine("==========================================================");
+            Console.ResetColor();
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Transfer Id    ||From\t\t||To\t\t||Amount");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("==========================================================");
+            Console.ResetColor();
+
+            foreach (Transfer transfer in transfers)
             {
-                Console.WriteLine($"     {transfer.TransferId}\t| {transfer.FromUsername}\t\t| {transfer.ToUsername}\t\t| {transfer.Amount}");
+                Console.WriteLine($"{transfer.TransferId}           ||{transfer.FromUsername}\t\t||{transfer.ToUsername}\t||${transfer.Amount}");
             }
         }
 
