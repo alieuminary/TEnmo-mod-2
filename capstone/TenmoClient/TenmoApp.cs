@@ -88,6 +88,7 @@ namespace TenmoClient
             if (menuSelection == 3)
             {
                 // View your pending requests
+                Option3();
             }
 
             if (menuSelection == 4)
@@ -104,6 +105,11 @@ namespace TenmoClient
             if (menuSelection == 5)
             {
                 // Request TE bucks
+                bool isSuccessful = Option5();
+                while (!isSuccessful)
+                {
+                    isSuccessful = Option5();
+                }
             }
 
             if (menuSelection == 6)
@@ -171,26 +177,97 @@ namespace TenmoClient
 
         private void Option2()
         {
-            List<Transfer> transfers = tenmoApiService.GetTransfers();
-            console.PrintTransfers(transfers);
+            Account currentUserAccount = tenmoApiService.GetBalance();
 
-            int selectedTransferId = console.PromptForInteger("Please enter Transfer Id to view details (0 to cancel)", -1);
+            List <Transfer> transfers = tenmoApiService.GetTransfers();
+            console.PrintTransfers(transfers, currentUserAccount.user_id, 2);
+
+            int selectedTransferId = console.PromptForInteger("Please enter Transfer Id to view details (0 to cancel)", 0);
+            bool isSelectedIdValid = false;
 
             if (selectedTransferId == 0)
             {
                 RunAuthenticated();
             }
-            else if (selectedTransferId == -1)
+            else 
             {
-                //console.PrintError("Invalid transfer ID.");
-                Option2();
+                foreach(Transfer transfer in transfers)
+                {
+                    if(selectedTransferId == transfer.TransferId)
+                    {
+                        isSelectedIdValid = true;
+                    }
+                }
             }
+            if (isSelectedIdValid)
+            {
+                try
+                {
+                    // Display transfer details
+                    Transfer transfer = tenmoApiService.GetTransferDetails(selectedTransferId);
+                    console.PrintTransferDetails(transfer);
+                    console.Pause();
+                }
+                catch (Exception ex)
+                {
+                    console.PrintError($" {selectedTransferId} is an invalid Transfer Id: {ex.Message}");
 
-            // Display transfer details
-            Transfer transfer = tenmoApiService.GetTransferDetails(selectedTransferId);
-            console.PrintTransferDetails(transfer);
-            console.Pause();
+                }
+            }
+            else
+            {
+                console.PrintError($" {selectedTransferId} is an invalid Transfer Id");
+                console.Pause();
+            }
+            
 
+        }
+
+        private void Option3()
+        {
+            Account currentUserAccount = tenmoApiService.GetBalance();
+
+            List<Transfer> transfers = tenmoApiService.GetTransfers();
+            console.PrintTransfers(transfers, currentUserAccount.user_id, 1);
+
+            int selectedTransferId = console.PromptForInteger("Please enter Transfer Id to approve/reject (0 to cancel)", 0);
+            bool isSelectedIdValid = false;
+
+            if (selectedTransferId == 0)
+            {
+                RunAuthenticated();
+            }
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++SEEE MMEEEEE+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+            else
+            {
+                foreach (Transfer transfer in transfers)
+                {
+                    if (selectedTransferId == transfer.TransferId)
+                    {
+                        isSelectedIdValid = true;
+                    }
+                }
+            }
+            if (isSelectedIdValid)
+            {
+                try
+                {
+                    // Display transfer details
+                    Transfer transfer = tenmoApiService.GetTransferDetails(selectedTransferId);
+                    console.PrintTransferDetails(transfer);
+                    console.Pause();
+                }
+                catch (Exception ex)
+                {
+                    console.PrintError($" {selectedTransferId} is an invalid Transfer Id: {ex.Message}");
+
+                }
+            }
+            else
+            {
+                console.PrintError($" {selectedTransferId} is an invalid Transfer Id");
+                console.Pause();
+            }
         }
 
         private bool Option4()
@@ -277,6 +354,73 @@ namespace TenmoClient
             console.Pause();
             return true;
 
+        }
+
+        private bool Option5()
+        {
+            // Request TE bucks
+            List<User> users = tenmoApiService.GetUsers();
+            console.PrintUsers(users);
+            int fromUserId = console.PromptForInteger("Id of the user you are requesting money from (0 to cancel) ", 0);
+            Account account = tenmoApiService.GetBalance();
+
+            if (fromUserId == 0)
+            {
+                return true;
+            }
+
+            bool isUser = false;
+            foreach (User user in users)
+            {
+                if (user.UserId == fromUserId)
+                {
+                    isUser = true;
+                }
+            }
+
+            if (isUser == false)
+            {
+                console.PrintError("Invalid user Id");
+                console.Pause();
+                return false;
+            }
+            if (fromUserId == account.user_id)
+            {
+                console.PrintError("You can't request money from yourself");
+                console.Pause();
+                return false;
+            }
+
+
+            decimal requestAmount = console.PromptForDecimal("Enter amount");
+
+            // condition check - to not allow zero or negative amount.
+            if (requestAmount <= 0)
+            {
+                console.PrintError("Dollar amount must be greater than zero.");
+                console.Pause();
+                return false;
+            }
+
+            //get the account information of the requested user
+            Account fromAccount = tenmoApiService.GetAccount(fromUserId);
+
+            // create a transfer object and send it to tenmoApiService.AddTransfer() method.
+            Transfer newTransfer = new Transfer();
+            newTransfer.AccountFrom = fromAccount.account_id;
+            newTransfer.AccountTo = account.account_id;
+            newTransfer.Amount = requestAmount;
+            // request transfer type = 1
+            newTransfer.TransferTypeId = 1;
+
+            // request transfer has an initial status of PENDING.
+            newTransfer.TransferStatusId = 1;
+
+            tenmoApiService.AddTransfer(newTransfer);
+
+            Console.WriteLine("Request Pending");
+            console.Pause();
+            return true;
         }
 
     }

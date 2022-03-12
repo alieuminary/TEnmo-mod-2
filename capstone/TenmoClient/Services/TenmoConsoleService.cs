@@ -58,7 +58,7 @@ namespace TenmoClient.Services
         // print out account balance
         public void PrintAccountBalance(decimal balance)
         {
-            Console.WriteLine($"Your current account balance is ${balance}");
+            Console.WriteLine($"Your current account balance is {string.Format("{0:C}", balance)}");
         }
 
         public void PrintUsers(List<User> users)
@@ -71,36 +71,77 @@ namespace TenmoClient.Services
             }
         }
 
-        public void PrintTransfers(List<Transfer> transfers)
+        public void PrintTransfers(List<Transfer> transfers, int currentUserId, int transferStatusId)
         {
-            Console.ForegroundColor = ConsoleColor.DarkGreen;
-            Console.WriteLine("==========================================================");
-            Console.ResetColor();
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("|Transfer Id    |From\t\t|To\t\t|Amount");
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("==========================================================");
-            Console.ResetColor();
 
-            foreach (Transfer transfer in transfers)
+
+            if (transferStatusId == 2)
             {
-                Console.WriteLine($"|{transfer.TransferId}           |{transfer.FromUsername}\t\t|{transfer.ToUsername}\t\t|${transfer.Amount}");
+                Console.ForegroundColor = ConsoleColor.DarkGreen;
+                Console.WriteLine("==========================================================");
+                Console.WriteLine("|Transfer Id    |From/To\t\t|Amount");
+                Console.WriteLine("==========================================================");
+                Console.ResetColor();
+
+                //to print APPROVED Transactions
+                foreach (Transfer transfer in transfers)
+                {
+                    if (transfer.TransferStatusId == 2)
+                    {
+                        if (currentUserId == transfer.ToUserId)
+                        {
+                            Console.WriteLine($"|{transfer.TransferId}           |From: {transfer.FromUsername}\t\t| {string.Format("{0:C}", transfer.Amount)}");
+                        }
+                        if (currentUserId == transfer.FromUserId)
+                        {
+                            Console.WriteLine($"|{transfer.TransferId}           |To:   {transfer.ToUsername}\t\t| {string.Format("{0:C}", transfer.Amount)}");
+                        }
+                    }
+                }
             }
+            else if (transferStatusId == 1)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkGreen;
+                Console.WriteLine("==========================================================");
+                Console.WriteLine("\t\tPending Transfers");
+                Console.WriteLine("|Transfer Id    |To\t\t|Amount");
+                Console.WriteLine("==========================================================");
+                Console.ResetColor();
+                //to print PENDING Transactions
+                foreach (Transfer transfer in transfers)
+                {
+                    if (transfer.TransferStatusId == 1)
+                    {
+                        //if (currentUserId == transfer.ToUserId)
+                        //{
+                        //    Console.WriteLine($"|{transfer.TransferId}           |From: {transfer.FromUsername}\t\t| {string.Format("{0:C}", transfer.Amount)}");
+                        //}
+                        if (currentUserId == transfer.FromUserId)
+                        {
+                            Console.WriteLine($"|{transfer.TransferId}           | {transfer.ToUsername}\t\t| {string.Format("{0:C}", transfer.Amount)}");
+                        }
+                    }
+                }
+            }
+            
+
+
+
         }
 
         public void PrintTransferDetails (Transfer transfer)
         {
             Console.ForegroundColor = ConsoleColor.DarkGreen;
-            Console.WriteLine("\t==================");
-            Console.WriteLine("\t Transfer Details");
-            Console.WriteLine("\t==================");
+            Console.WriteLine("==================");
+            Console.WriteLine(" Transfer Details");
+            Console.WriteLine("==================");
             Console.ResetColor();
-            Console.WriteLine($"\tId:\t{transfer.TransferId}");
-            Console.WriteLine($"\tFrom:\t{transfer.FromUsername}");
-            Console.WriteLine($"\tTo:\t{transfer.ToUsername}");
-            Console.WriteLine($"\tType:\t{transfer.TransferTypeDesc}");
-            Console.WriteLine($"\tStatus:\t{transfer.TransferStatusDesc}");
-            Console.WriteLine($"\tAmount:\t${transfer.Amount}");
+            Console.WriteLine($"Id:\t{transfer.TransferId}");
+            Console.WriteLine($"From:\t{transfer.FromUsername}");
+            Console.WriteLine($"To:\t{transfer.ToUsername}");
+            Console.WriteLine($"Type:\t{transfer.TransferTypeDesc}");
+            Console.WriteLine($"Status:\t{transfer.TransferStatusDesc}");
+            Console.WriteLine($"Amount:\t{string.Format("{0:C}", transfer.Amount)}");
             Console.WriteLine();
 
         }

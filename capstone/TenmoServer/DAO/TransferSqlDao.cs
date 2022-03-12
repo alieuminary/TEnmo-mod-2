@@ -163,58 +163,70 @@ namespace TenmoServer.DAO
 
         private Transfer GetUserIdsAndUsernames(Transfer transfer)
         {
-
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            try
             {
-                conn.Open();
 
-                string cmdText = "SELECT user_id FROM account WHERE account_id = @toUserAccountId";
-                SqlCommand cmd = new SqlCommand(cmdText, conn);
-                cmd.Parameters.AddWithValue("@toUserAccountId", transfer.AccountTo);
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
 
-                transfer.ToUserId = (int)cmd.ExecuteScalar();
+                    string cmdText = "SELECT user_id FROM account WHERE account_id = @toUserAccountId";
+                    SqlCommand cmd = new SqlCommand(cmdText, conn);
+                    cmd.Parameters.AddWithValue("@toUserAccountId", transfer.AccountTo);
+                    try
+                    {
+                        transfer.ToUserId = (int)cmd.ExecuteScalar();
+                    }
+                    catch(SqlException)
+                    {
+                        throw;
+                    }
+                }
+
+
+
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    string cmdText = "SELECT user_id FROM account WHERE account_id = @fromUserAccountId";
+                    SqlCommand cmd = new SqlCommand(cmdText, conn);
+                    cmd.Parameters.AddWithValue("@fromUserAccountId", transfer.AccountFrom);
+
+                    transfer.FromUserId = (int)cmd.ExecuteScalar();
+                }
+
+
+
+                // ===== Assign to toUsername ==== //
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    string cmdText = "SELECT username FROM tenmo_user WHERE user_id = @toUserId";
+                    SqlCommand cmd = new SqlCommand(cmdText, conn);
+                    cmd.Parameters.AddWithValue("@toUserId", transfer.ToUserId);
+
+                    transfer.ToUsername = cmd.ExecuteScalar().ToString();
+                }
+
+
+                // ===== Assign to fromUsername ==== //
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    string cmdText = "SELECT username FROM tenmo_user WHERE user_id = @fromUserId";
+                    SqlCommand cmd = new SqlCommand(cmdText, conn);
+                    cmd.Parameters.AddWithValue("@fromUserId", transfer.FromUserId);
+
+                    transfer.FromUsername = cmd.ExecuteScalar().ToString();
+                }
             }
-
-
-
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            catch(NullReferenceException ex)
             {
-                conn.Open();
-
-                string cmdText = "SELECT user_id FROM account WHERE account_id = @fromUserAccountId";
-                SqlCommand cmd = new SqlCommand(cmdText, conn);
-                cmd.Parameters.AddWithValue("@fromUserAccountId", transfer.AccountFrom);
-
-                transfer.FromUserId = (int)cmd.ExecuteScalar();
+                throw;
             }
-
-
-
-            // ===== Assign to toUsername ==== //
-            using (SqlConnection conn = new SqlConnection(connectionString))
-            {
-                conn.Open();
-
-                string cmdText = "SELECT username FROM tenmo_user WHERE user_id = @toUserId";
-                SqlCommand cmd = new SqlCommand(cmdText, conn);
-                cmd.Parameters.AddWithValue("@toUserId", transfer.ToUserId);
-
-                transfer.ToUsername = cmd.ExecuteScalar().ToString();
-            }
-
-
-            // ===== Assign to fromUsername ==== //
-            using (SqlConnection conn = new SqlConnection(connectionString))
-            {
-                conn.Open();
-
-                string cmdText = "SELECT username FROM tenmo_user WHERE user_id = @fromUserId";
-                SqlCommand cmd = new SqlCommand(cmdText, conn);
-                cmd.Parameters.AddWithValue("@fromUserId", transfer.FromUserId);
-
-                transfer.FromUsername = cmd.ExecuteScalar().ToString();
-            }
-
             return transfer;
         }
     }
