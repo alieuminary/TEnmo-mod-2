@@ -77,27 +77,31 @@ namespace TenmoClient.Services
             Console.WriteLine("==========================================================");
             Console.ResetColor();
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("Transfer Id    ||From\t\t||To\t\t||Amount");
+            Console.WriteLine("|Transfer Id    |From\t\t|To\t\t|Amount");
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("==========================================================");
             Console.ResetColor();
 
             foreach (Transfer transfer in transfers)
             {
-                Console.WriteLine($"{transfer.TransferId}           ||{transfer.FromUsername}\t\t||{transfer.ToUsername}\t||${transfer.Amount}");
+                Console.WriteLine($"|{transfer.TransferId}           |{transfer.FromUsername}\t\t|{transfer.ToUsername}\t\t|${transfer.Amount}");
             }
         }
 
         public void PrintTransferDetails (Transfer transfer)
         {
-            Console.WriteLine("Transfer Details");
-            Console.WriteLine("================");
-            Console.WriteLine($"Id: {transfer.TransferId}");
-            Console.WriteLine($"From: {transfer.FromUsername}");
-            Console.WriteLine($"To: {transfer.ToUsername}");
-            Console.WriteLine($"Type: {transfer.TransferTypeDesc}");
-            Console.WriteLine($"Status: {transfer.TransferStatusDesc}");
-            Console.WriteLine($"Amount: ${transfer.Amount}");
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
+            Console.WriteLine("\t==================");
+            Console.WriteLine("\t Transfer Details");
+            Console.WriteLine("\t==================");
+            Console.ResetColor();
+            Console.WriteLine($"\tId:\t{transfer.TransferId}");
+            Console.WriteLine($"\tFrom:\t{transfer.FromUsername}");
+            Console.WriteLine($"\tTo:\t{transfer.ToUsername}");
+            Console.WriteLine($"\tType:\t{transfer.TransferTypeDesc}");
+            Console.WriteLine($"\tStatus:\t{transfer.TransferStatusDesc}");
+            Console.WriteLine($"\tAmount:\t${transfer.Amount}");
+            Console.WriteLine();
 
         }
          public void PrintTenmoBanner()
