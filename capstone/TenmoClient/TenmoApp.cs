@@ -234,72 +234,102 @@ namespace TenmoClient
             List<Transfer> transfers = tenmoApiService.GetPendingTransfers();
             console.PrintTransfers(transfers, currentUserAccount.user_id, 1);
 
-            int selectedTransferId = console.PromptForInteger("Please enter Transfer Id to approve/reject (0 to cancel)", 0);
-            bool isSelectedIdValid = false;
-
-            console.PrintApproveRejectMenu();
-            int approveRejectMenuSelection = console.PromptForInteger("Please choose an option (0 to cancel)", 0);
-
-
-
-            switch (approveRejectMenuSelection)
+            if(transfers.Count == 0)
             {
+                console.PrintError("No Pending Transfers Currently");
+                console.Pause();
+            }
+            else
+            {
+                int selectedTransferId = console.PromptForInteger("Please enter Transfer Id to approve/reject (0 to cancel)", 0);
+                bool isSelectedIdValid = false;
 
-                // == don't approve or reject pending transfer == //
-                case 0:
+
+                foreach (Transfer transfer in transfers)
+                {
+                    if (selectedTransferId == transfer.TransferId)
+                    {
+                        isSelectedIdValid = true;
+                    }
+                }
                     
 
-                    break;
+                if (isSelectedIdValid)
+                {
+                    console.PrintApproveRejectMenu();
+                    int approveRejectMenuSelection = console.PromptForInteger("Please choose an option (0 to cancel)", 0);
+
+                    switch (approveRejectMenuSelection)
+                    {
+
+                        // == don't approve or reject pending transfer == //
+                        case 0:
+                            break;
+
+                        // == approves pending transfer == //
+                        case 1:
+                            // get single transfer details
+                            Transfer transferToApprove = tenmoApiService.GetTransferDetails(selectedTransferId);
+
+                            // update transfer status id
+                            transferToApprove.TransferStatusId = 2;
+
+                            // call api method to update transfer status id
+                            tenmoApiService.UpdateStatusId(transferToApprove);
+
+                            // update from and to user account balances
+                            Account fromUserAccount = tenmoApiService.GetAccount(transferToApprove.FromUserId);
+                            Account toUserAccount = tenmoApiService.GetAccount(transferToApprove.ToUserId);
+
+                            fromUserAccount.balance -= transferToApprove.Amount;
+                            toUserAccount.balance += transferToApprove.Amount;
+
+                            tenmoApiService.UpdateBalance(fromUserAccount);
+                            tenmoApiService.UpdateBalance(toUserAccount);
+
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.WriteLine("Transfer Approved!");
+                            Console.ResetColor();
+                            console.Pause();
+
+                            break;
 
 
-                // == approves pending transfer == //
-                case 1:
-                    // get single transfer details
-                    Transfer transferToApprove = tenmoApiService.GetTransferDetails(selectedTransferId);
 
-                    // update transfer status id
-                    transferToApprove.TransferStatusId = 2;
+                        // == rejects pending transfer == //
+                        case 2:
+                            // get single transfer details
+                            Transfer transferToReject = tenmoApiService.GetTransferDetails(selectedTransferId);
 
-                    // call api method to update transfer status id
-                    tenmoApiService.UpdateStatusId(transferToApprove);
+                            // update transfer status id
+                            transferToReject.TransferStatusId = 3;
 
-                    // update from and to user account balances
-                    Account fromUserAccount = tenmoApiService.GetAccount(transferToApprove.FromUserId);
-                    Account toUserAccount = tenmoApiService.GetAccount(transferToApprove.ToUserId);
+                            // call api method to update transfer status id
+                            tenmoApiService.UpdateStatusId(transferToReject);
 
-                    fromUserAccount.balance -= transferToApprove.Amount;
-                    toUserAccount.balance += transferToApprove.Amount;
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine("Transfer Rejected");
+                            Console.ResetColor();
+                            console.Pause();
 
-                    tenmoApiService.UpdateBalance(fromUserAccount);
-                    tenmoApiService.UpdateBalance(toUserAccount);
+                            break;
 
-                    break;
+                    }
 
+                }
+                else if(selectedTransferId == 0)
+                {
 
-
-                // == rejects pending transfer == //
-                case 2:
-                    // get single transfer details
-                    Transfer transferToReject = tenmoApiService.GetTransferDetails(selectedTransferId);
-
-                    // update transfer status id
-                    transferToReject.TransferStatusId = 3;
-
-                    // call api method to update transfer status id
-                    tenmoApiService.UpdateStatusId(transferToReject);
-                    break;
+                }
+                else
+                {
+                    console.PrintError("Invalid Id");
+                    console.Pause();
+                }
 
             }
 
-
-
-
         }   
-
-
-
-
-
 
 
         // implementation for option 4: "Send TE bucks"
@@ -383,7 +413,9 @@ namespace TenmoClient
 
             tenmoApiService.AddTransfer(newTransfer);
 
+            Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("Transfer Successful!");
+            Console.ResetColor();
             console.Pause();
             return true;
 
@@ -452,8 +484,9 @@ namespace TenmoClient
             newTransfer.TransferStatusId = 1;
 
             tenmoApiService.AddTransfer(newTransfer);
-
-            Console.WriteLine("Request Pending");
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("Request Pending...");
+            Console.ResetColor();
             console.Pause();
             return true;
         }

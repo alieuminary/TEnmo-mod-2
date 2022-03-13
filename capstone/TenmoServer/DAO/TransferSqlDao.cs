@@ -238,10 +238,10 @@ namespace TenmoServer.DAO
 
                     string cmdText = "SELECT * FROM transfer T " +
                                      "JOIN account A on T.account_from = A.account_id " +
-                                     "JOIN account B on T.account_to = B.account_id " +
+                                     //"JOIN account B on T.account_to = B.account_id " +
                                      "JOIN transfer_type TT on T.transfer_type_id = TT.transfer_type_id " +
                                      "JOIN transfer_status TS on T.transfer_status_id = TS.transfer_status_id " +
-                                     "WHERE (B.user_id = @authUserId OR A.user_id = @authUserId) AND TS.transfer_status_id = 1;";
+                                     "WHERE (A.user_id = @authUserId) AND TS.transfer_status_id = 1;";//B.user_id = @authUserId OR 
                     SqlCommand cmd = new SqlCommand(cmdText, conn);
                     cmd.Parameters.AddWithValue("@authUserId", authUserId);
                     SqlDataReader reader = cmd.ExecuteReader();

@@ -73,8 +73,6 @@ namespace TenmoClient.Services
 
         public void PrintTransfers(List<Transfer> transfers, int currentUserId, int transferStatusId)
         {
-
-
             if (transferStatusId == 2)
             {
                 Console.ForegroundColor = ConsoleColor.DarkGreen;
@@ -125,9 +123,6 @@ namespace TenmoClient.Services
                 }
             }
             
-
-
-
         }
 
         public void PrintTransferDetails (Transfer transfer)
