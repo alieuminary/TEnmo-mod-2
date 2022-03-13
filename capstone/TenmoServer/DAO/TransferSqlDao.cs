@@ -63,7 +63,6 @@ namespace TenmoServer.DAO
 
         }
 
-
         public Transfer GetTransferDetails(int id) 
         {
             Transfer transfer = new Transfer();
@@ -106,9 +105,6 @@ namespace TenmoServer.DAO
             return transfer;
         }
 
-
-
-
         public int AddTransfer(int transferTypeId, int transferStatusId, int accountFrom, int accountTo, decimal amount)
         {
             
@@ -139,7 +135,6 @@ namespace TenmoServer.DAO
             }
         }
 
-
         private Transfer GetTransferFromReader(SqlDataReader reader)
         {
 
@@ -158,8 +153,6 @@ namespace TenmoServer.DAO
             return transfer;
 
         }
-
-
 
         private Transfer GetUserIdsAndUsernames(Transfer transfer)
         {
@@ -229,5 +222,81 @@ namespace TenmoServer.DAO
             }
             return transfer;
         }
+
+        public List<Transfer> GetPendingTransfers(string authUserId)
+        {
+
+            //string authUserId = null//User.FindFirst("sub")?.Value; // User.Identity.Name;
+
+            List<Transfer> transfers = new List<Transfer>();
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    string cmdText = "SELECT * FROM transfer T " +
+                                     "JOIN account A on T.account_from = A.account_id " +
+                                     "JOIN account B on T.account_to = B.account_id " +
+                                     "JOIN transfer_type TT on T.transfer_type_id = TT.transfer_type_id " +
+                                     "JOIN transfer_status TS on T.transfer_status_id = TS.transfer_status_id " +
+                                     "WHERE (B.user_id = @authUserId OR A.user_id = @authUserId) AND TS.transfer_status_id = 1;";
+                    SqlCommand cmd = new SqlCommand(cmdText, conn);
+                    cmd.Parameters.AddWithValue("@authUserId", authUserId);
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        Transfer transfer = GetTransferFromReader(reader);
+                        transfer = GetUserIdsAndUsernames(transfer);
+                        transfers.Add(transfer);
+                    }
+
+
+                }
+            }
+            catch (SqlException)
+            {
+                throw;
+            }
+
+            return transfers;
+
+        }
+
+        public bool UpdateStatusId(Transfer transfer)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    string cmdText = "UPDATE transfer " +
+                                     "SET transfer_status_id = @transferStatusId " + 
+                                     "WHERE transfer_id = @transfer_id";
+
+                    SqlCommand cmd = new SqlCommand(cmdText, conn);
+                    cmd.Parameters.AddWithValue("@transferStatusId", transfer.TransferStatusId);
+                    cmd.Parameters.AddWithValue("@transfer_id", transfer.TransferId);
+                    int rowsAffected = cmd.ExecuteNonQuery();
+
+                    if (rowsAffected > 0)
+                    {
+                        return true; // change was successful
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
+            catch (SqlException)
+            {
+                throw;
+            }
+        }
+
     }
 }

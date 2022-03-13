@@ -71,9 +71,22 @@ namespace TenmoClient.Services
             return response.Data;
         }
 
+        public List<Transfer> GetPendingTransfers()
+        {
+            RestRequest request = new RestRequest("transfer/pending");
+            IRestResponse<List<Transfer>> response = client.Get<List<Transfer>>(request);
 
+            return response.Data;
+        }
 
-
+        public Transfer UpdateStatusId(Transfer transferToUpdate)
+        {
+            RestRequest request = new RestRequest($"transfer/{transferToUpdate.TransferId}");
+            request.AddJsonBody(transferToUpdate);
+            IRestResponse<Transfer> response = client.Put<Transfer>(request);
+            //check for error?
+            return response.Data;
+        }
 
 
 

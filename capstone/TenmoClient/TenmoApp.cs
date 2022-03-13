@@ -175,6 +175,8 @@ namespace TenmoClient
             console.Pause();
         }
 
+
+        // impementation for option 2: "View your past transfers"
         private void Option2()
         {
             Account currentUserAccount = tenmoApiService.GetBalance();
@@ -223,53 +225,84 @@ namespace TenmoClient
 
         }
 
+
+        // implementation for Option 3: "View your pending requests"
         private void Option3()
         {
             Account currentUserAccount = tenmoApiService.GetBalance();
 
-            List<Transfer> transfers = tenmoApiService.GetTransfers();
+            List<Transfer> transfers = tenmoApiService.GetPendingTransfers();
             console.PrintTransfers(transfers, currentUserAccount.user_id, 1);
 
             int selectedTransferId = console.PromptForInteger("Please enter Transfer Id to approve/reject (0 to cancel)", 0);
             bool isSelectedIdValid = false;
 
-            if (selectedTransferId == 0)
-            {
-                RunAuthenticated();
-            }
-//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++SEEE MMEEEEE+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-            else
-            {
-                foreach (Transfer transfer in transfers)
-                {
-                    if (selectedTransferId == transfer.TransferId)
-                    {
-                        isSelectedIdValid = true;
-                    }
-                }
-            }
-            if (isSelectedIdValid)
-            {
-                try
-                {
-                    // Display transfer details
-                    Transfer transfer = tenmoApiService.GetTransferDetails(selectedTransferId);
-                    console.PrintTransferDetails(transfer);
-                    console.Pause();
-                }
-                catch (Exception ex)
-                {
-                    console.PrintError($" {selectedTransferId} is an invalid Transfer Id: {ex.Message}");
+            console.PrintApproveRejectMenu();
+            int approveRejectMenuSelection = console.PromptForInteger("Please choose an option (0 to cancel)", 0);
 
-                }
-            }
-            else
-            {
-                console.PrintError($" {selectedTransferId} is an invalid Transfer Id");
-                console.Pause();
-            }
-        }
 
+
+            switch (approveRejectMenuSelection)
+            {
+
+                // == don't approve or reject pending transfer == //
+                case 0:
+                    
+
+                    break;
+
+
+                // == approves pending transfer == //
+                case 1:
+                    // get single transfer details
+                    Transfer transferToApprove = tenmoApiService.GetTransferDetails(selectedTransferId);
+
+                    // update transfer status id
+                    transferToApprove.TransferStatusId = 2;
+
+                    // call api method to update transfer status id
+                    tenmoApiService.UpdateStatusId(transferToApprove);
+
+                    // update from and to user account balances
+                    Account fromUserAccount = tenmoApiService.GetAccount(transferToApprove.FromUserId);
+                    Account toUserAccount = tenmoApiService.GetAccount(transferToApprove.ToUserId);
+
+                    fromUserAccount.balance -= transferToApprove.Amount;
+                    toUserAccount.balance += transferToApprove.Amount;
+
+                    tenmoApiService.UpdateBalance(fromUserAccount);
+                    tenmoApiService.UpdateBalance(toUserAccount);
+
+                    break;
+
+
+
+                // == rejects pending transfer == //
+                case 2:
+                    // get single transfer details
+                    Transfer transferToReject = tenmoApiService.GetTransferDetails(selectedTransferId);
+
+                    // update transfer status id
+                    transferToReject.TransferStatusId = 3;
+
+                    // call api method to update transfer status id
+                    tenmoApiService.UpdateStatusId(transferToReject);
+                    break;
+
+            }
+
+
+
+
+        }   
+
+
+
+
+
+
+
+        // implementation for option 4: "Send TE bucks"
         private bool Option4()
         {
 
@@ -356,6 +389,8 @@ namespace TenmoClient
 
         }
 
+
+        // implementation for option 5: "Request TE bucks"
         private bool Option5()
         {
             // Request TE bucks

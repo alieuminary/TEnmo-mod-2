@@ -51,7 +51,23 @@ namespace TenmoServer.Controllers
 
         }
 
+        [HttpGet("pending")]
+        public ActionResult<List<Transfer>> ListPendingTransfers()
+        {
+            List<Transfer> result = new List<Transfer>();
 
+            string authUserId = User.FindFirst("sub")?.Value;
+            if (authUserId == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                result = transferDao.GetPendingTransfers(authUserId);
+            }
+
+            return Ok(result);
+        }
 
 
 
@@ -70,6 +86,20 @@ namespace TenmoServer.Controllers
 
 
 
+        [HttpPut("{id}")]
+
+        public ActionResult<Transfer> UpdateStatusId(int id, Transfer transfer)
+        {
+
+            bool result = transferDao.UpdateStatusId(transfer);
+
+            if (result == true)
+            {
+                Transfer updatedTransfer = transferDao.GetTransferDetails(id);
+                return Ok(updatedTransfer);
+            }
+            return NotFound();
+        }
 
     }
 }

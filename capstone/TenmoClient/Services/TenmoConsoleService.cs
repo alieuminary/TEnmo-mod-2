@@ -102,12 +102,13 @@ namespace TenmoClient.Services
             else if (transferStatusId == 1)
             {
                 Console.ForegroundColor = ConsoleColor.DarkGreen;
-                Console.WriteLine("==========================================================");
-                Console.WriteLine("\t\tPending Transfers");
-                Console.WriteLine("|Transfer Id    |To\t\t|Amount");
-                Console.WriteLine("==========================================================");
+                Console.WriteLine("==================================================");
+                Console.WriteLine("\tPending Requested Transfers");
+                Console.WriteLine("\t---------------------------");
+                Console.WriteLine("|Transfer Id    |From\t\t|Amount");
+                Console.WriteLine("==================================================");
                 Console.ResetColor();
-                //to print PENDING Transactions
+                // to print PENDING Transactions
                 foreach (Transfer transfer in transfers)
                 {
                     if (transfer.TransferStatusId == 1)
@@ -118,7 +119,7 @@ namespace TenmoClient.Services
                         //}
                         if (currentUserId == transfer.FromUserId)
                         {
-                            Console.WriteLine($"|{transfer.TransferId}           | {transfer.ToUsername}\t\t| {string.Format("{0:C}", transfer.Amount)}");
+                            Console.WriteLine($"|{transfer.TransferId}           |{transfer.ToUsername}\t\t| {string.Format("{0:C}", transfer.Amount)}");
                         }
                     }
                 }
@@ -145,7 +146,7 @@ namespace TenmoClient.Services
             Console.WriteLine();
 
         }
-         public void PrintTenmoBanner()
+        public void PrintTenmoBanner()
         {
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine("****************************");
@@ -196,6 +197,13 @@ namespace TenmoClient.Services
 
         }
 
+        public void PrintApproveRejectMenu()
+        {
+            Console.WriteLine("1: Approve");
+            Console.WriteLine("2: Reject");
+            Console.WriteLine("0: Don't approve or reject");
+            Console.WriteLine("----------");
 
+        }
     }
 }
