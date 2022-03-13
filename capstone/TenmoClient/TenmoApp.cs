@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using TenmoClient.Models;
 using TenmoClient.Services;
+using Colors.Net;
 
 namespace TenmoClient
 {
@@ -484,9 +485,10 @@ namespace TenmoClient
             newTransfer.TransferStatusId = 1;
 
             tenmoApiService.AddTransfer(newTransfer);
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine("Request Pending...");
-            Console.ResetColor();
+            
+
+            RichString darkYellow = StringStaticMethods.DarkYellow("Request Pending...");
+            ColoredConsole.WriteLine(darkYellow);
             console.Pause();
             return true;
         }
