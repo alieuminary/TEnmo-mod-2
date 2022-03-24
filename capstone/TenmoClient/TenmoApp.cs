@@ -206,9 +206,9 @@ namespace TenmoClient
             {
                 try
                 {
-                    // Display transfer details
-                    Transfer transfer = tenmoApiService.GetTransferDetails(selectedTransferId);
-                    console.PrintTransferDetails(transfer);
+                    
+                    Transfer transfer = tenmoApiService.GetTransferDetails(selectedTransferId); // Make request for transfer details
+                    console.PrintTransferDetails(transfer); // Display transfer details
                     console.Pause();
                 }
                 catch (Exception ex)
@@ -486,7 +486,7 @@ namespace TenmoClient
 
             tenmoApiService.AddTransfer(newTransfer);
             
-
+            // Colors.Net package - install a package
             RichString darkYellow = StringStaticMethods.DarkYellow("Request Pending...");
             ColoredConsole.WriteLine(darkYellow);
             console.Pause();
